@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Placement Preparation Tracker — Localhost Portal</title>
+  <style>
+    :root {
+      --primary: #2563EB;
+      --primary-dark: #1D4ED8;
+      --bg-dark: #1E293B;
+      --sidebar-bg: #0F172A;
+      --app-bg: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --border-color: #E2E8F0;
+      --text-main: #0F172A;
+      --text-muted: #64748B;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --danger: #EF4444;
+      --info: #06B6D4;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+    body { background: var(--app-bg); color: var(--text-main); min-height: 100vh; }
+
+    /* =========================================================================
+       LOGIN VIEW
+       ========================================================================= */
+    #loginView {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F172A 100%);
+      padding: 20px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 440px;
+      background: #FFFFFF;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      padding: 36px 32px;
+      text-align: center;
+    }
+
+    .login-logo {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #2563EB, #1D4ED8);
+      color: #FFFFFF;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    }
+
+    .login-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #0F172A;
+      margin-bottom: 4px;
+    }
+
+    .login-subtitle {
+      font-size: 13px;
+      color: #64748B;
+      margin-bottom: 18px;
+    }
+
+    .login-section-label {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--primary);
+      margin-bottom: 20px;
+      padding: 4px 12px;
+      background: #EFF6FF;
+      border-radius: 20px;
+    }
+
+    .login-form {
+      text-align: left;
+    }
+
+    .login-form .form-group {
+      margin-bottom: 16px;
+    }
+
+    .login-form label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 6px;
+    }
+
+    .login-form input {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 14px;
+      color: #0F172A;
+      background: #F8FAFC;
+      transition: all 0.15s ease;
+    }
+
+    .login-form input:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: #FFFFFF;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .login-error {
+      display: none;
+      background: #FEE2E2;
+      border: 1px solid #FCA5A5;
+      color: #B91C1C;
+      font-size: 13px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      text-align: left;
+    }
+
+    .btn-block {
+      width: 100%;
+      padding: 12px;
+      font-size: 14.5px;
+      font-weight: 700;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-login {
+      background: var(--primary);
+      color: #FFFFFF;
+      margin-bottom: 10px;
+    }
+    .btn-login:hover { background: var(--primary-dark); }
+    .btn-login:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .btn-clear {
+      background: #F1F5F9;
+      color: #475569;
+    }
+    .btn-clear:hover { background: #E2E8F0; }
+
+    .demo-credentials-box {
+      margin-top: 22px;
+      padding: 14px;
+      background: #F0FDF4;
+      border: 1px dashed #86EFAC;
+      border-radius: 10px;
+      font-size: 12.5px;
+      color: #166534;
+      text-align: left;
+    }
+
+    .demo-credentials-box strong { color: #14532D; }
+
+    .btn-autofill {
+      display: inline-block;
+      margin-top: 8px;
+      color: var(--primary);
+      font-weight: 700;
+      text-decoration: underline;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .login-footer-note {
+      margin-top: 18px;
+      font-size: 11.5px;
+      color: #94A3B8;
+    }
+
+    /* =========================================================================
+       AUTHENTICATED APPLICATION LAYOUT
+       ========================================================================= */
+    #appContainer {
+      display: none;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: var(--sidebar-bg);
+      color: #F8FAFC;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 100;
+      border-right: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .sidebar-header {
+      padding: 24px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .logo-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 18px;
+      color: #fff;
+    }
+
+    .brand-title { font-weight: 700; font-size: 16px; letter-spacing: -0.2px; }
+    .brand-subtitle { font-size: 11.5px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .nav-links { list-style: none; padding: 16px 12px; flex: 1; overflow-y: auto; }
+    .nav-item { margin-bottom: 4px; }
+    .nav-btn {
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: none;
+      color: #94A3B8;
+      padding: 11px 14px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.15s ease;
+    }
+
+    .nav-btn:hover { background: rgba(255,255,255,0.06); color: #FFFFFF; }
+    .nav-btn.active { background: var(--primary); color: #FFFFFF; }
+
+    .user-footer {
+      padding: 16px;
+      background: rgba(0,0,0,0.25);
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .user-name { font-weight: 700; font-size: 13.5px; color: #F1F5F9; }
+    .user-pin { font-size: 11.5px; color: #94A3B8; margin-top: 2px; }
+
+    .sidebar-logout-btn {
+      margin-top: 10px;
+      width: 100%;
+      padding: 8px;
+      background: rgba(239, 68, 68, 0.15);
+      color: #FCA5A5;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .sidebar-logout-btn:hover {
+      background: #EF4444;
+      color: #FFFFFF;
+    }
+
+    /* Main Content Wrapper */
+    .main-wrapper {
+      margin-left: 260px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .topbar {
+      height: 64px;
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .topbar-title { font-size: 18px; font-weight: 800; color: #0F172A; }
+    .topbar-right { display: flex; align-items: center; gap: 14px; }
+
+    .user-chip {
+      background: #F1F5F9;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12.5px;
+      color: #334155;
+      font-weight: 600;
+    }
+
+    .db-status-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #ECFDF5;
+      color: #065F46;
+      border: 1px solid #A7F3D0;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--success); }
+
+    .btn { padding: 8px 16px; border-radius: 6px; border: none; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-danger { background: var(--danger); color: #fff; padding: 4px 10px; font-size: 12px; border-radius: 4px; }
+    .btn-danger:hover { background: #DC2626; }
+
+    .btn-logout {
+      background: #FEE2E2;
+      color: #B91C1C;
+      border: 1px solid #FCA5A5;
+      padding: 6px 14px;
+      font-size: 12.5px;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .btn-logout:hover {
+      background: #EF4444;
+      color: #FFFFFF;
+    }
+
+    .content-area { padding: 32px; flex: 1; }
+
+    /* Views */
+    .view-section { display: none; }
+    .view-section.active { display: block; }
+
+    /* Cards & Grids */
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 24px; }
+    .kpi-card {
+      background: #fff;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .kpi-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 14px;
+    }
+    .kpi-num { font-size: 26px; font-weight: 800; color: #0F172A; line-height: 1; }
+    .kpi-label { font-size: 12.5px; color: var(--text-muted); margin-top: 4px; font-weight: 600; }
+
+    /* Tables */
+    .table-container { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px; }
+    th { background: #F8FAFC; color: #475569; font-weight: 700; padding: 12px 14px; border-bottom: 1px solid var(--border-color); font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.5px; }
+    td { padding: 14px; border-bottom: 1px solid #F1F5F9; color: #334155; }
+    tr:hover td { background: #F8FAFC; }
+
+    /* Badges */
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; }
+    .badge-applied { background: #EFF6FF; color: #1D4ED8; }
+    .badge-shortlisted { background: #FEF3C7; color: #B45309; }
+    .badge-interview { background: #F3E8FF; color: #7E22CE; }
+    .badge-selected { background: #ECFDF5; color: #047857; }
+    .badge-rejected { background: #FEE2E2; color: #B91C1C; }
+    .badge-excellent { background: #ECFDF5; color: #047857; }
+    .badge-good { background: #EFF6FF; color: #1D4ED8; }
+    .badge-average { background: #FEF3C7; color: #B45309; }
+    .badge-needs-improvement { background: #FEE2E2; color: #B91C1C; }
+    .badge-easy { background: #ECFDF5; color: #047857; }
+    .badge-medium { background: #FEF3C7; color: #B45309; }
+    .badge-hard { background: #FEE2E2; color: #B91C1C; }
+
+    /* Form Grids */
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 16px; }
+    .form-group { display: flex; flex-direction: column; }
+    .form-group label { font-size: 12.5px; font-weight: 600; color: #475569; margin-bottom: 6px; }
+    .form-control { padding: 9px 12px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13.5px; background: #fff; }
+    .form-control:focus { outline: none; border-color: var(--primary); }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0F172A;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      display: none;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =========================================================================
+       1. LOGIN VIEW (Shown when user is not logged in)
+       ========================================================================= -->
+  <div id="loginView">
+    <div class="login-card">
+      <div class="login-logo">PPT</div>
+      <h1 class="login-title">Placement Preparation Tracker</h1>
+      <div class="login-subtitle">APSCHE · Full Stack Java Development</div>
+      <div class="login-section-label">Student Authentication</div>
+
+      <div id="loginError" class="login-error"></div>
+
+      <form class="login-form" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label>Student Email / ID</label>
+          <input type="text" id="loginEmail" placeholder="Enter student email" required value="kphani8937@gmail.com" />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="loginPassword" placeholder="Enter password" required value="Phani@123" />
+        </div>
+        <button type="submit" id="btnLogin" class="btn-block btn-login">Login to Portal</button>
+        <button type="button" class="btn-block btn-clear" onclick="clearLoginForm()">Clear</button>
+      </form>
+
+      <div class="demo-credentials-box">
+        <div><strong>Default Student Account:</strong></div>
+        <div style="margin-top: 4px;">• Email: <code>kphani8937@gmail.com</code></div>
+        <div>• Password: <code>Phani@123</code></div>
+        <span class="btn-autofill" onclick="autofillDemo()">Autofill Credentials</span>
+      </div>
+
+      <div class="login-footer-note">
+        Connected to MySQL 9.7 Database (<code>placement_tracker</code>) via JDBC
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       2. AUTHENTICATED PORTAL (Shown after successful login)
+       ========================================================================= -->
+  <div id="appContainer">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-badge">P</div>
+        <div>
+          <div class="brand-title">Placement Tracker</div>
+          <div class="brand-subtitle">APSCHE - ExcelR</div>
+        </div>
+      </div>
+      <ul class="nav-links">
+        <li class="nav-item"><button class="nav-btn active" onclick="showView('dashboard')">[=] Dashboard</button></li>
+        <li class="nav-item"><button class="nav-btn" onclick="showView('companies')">[C] Companies</button></li>
+        <li class="nav-item"><button class="nav-btn" onclick="showView('aptitude')">[A] Aptitude Tracker</button></li>
+        <li class="nav-item"><button class="nav-btn" onclick="showView('dsa')">[D] DSA Progress</button></li>
+        <li class="nav-item"><button class="nav-btn" onclick="showView('interviews')">[I] Interviews</button></li>
+        <li class="nav-item"><button class="nav-btn" onclick="showView('reports')">[R] Progress Reports</button></li>
+        <li class="nav-item"><button class="nav-btn" onclick="showView('diagnostics')">[*] MySQL Diagnostic</button></li>
+      </ul>
+      <div class="user-footer">
+        <div class="user-name" id="userDisplay">Karnam Phaneendra</div>
+        <div class="user-pin" id="userPinDisplay">PIN: 24A85A6102 • MySQL 9.7</div>
+        <button class="sidebar-logout-btn" onclick="handleLogout()">[->] Sign Out</button>
+      </div>
+    </aside>
+
+    <!-- Main Area -->
+    <div class="main-wrapper">
+      <header class="topbar">
+        <div class="topbar-title" id="pageTitle">Executive Dashboard</div>
+        <div class="topbar-right">
+          <div class="user-chip">👤 <span id="topbarUserName">Karnam Phaneendra</span></div>
+          <div class="db-status-pill">
+            <span class="status-dot"></span>
+            <span id="dbStatusText">MySQL: localhost:3306</span>
+          </div>
+          <button class="btn btn-primary" style="padding: 6px 14px; font-size: 12px;" onclick="refreshAll()">Refresh</button>
+          <button class="btn-logout" onclick="handleLogout()">[->] Logout</button>
+        </div>
+      </header>
+
+      <main class="content-area">
+        <!-- DASHBOARD VIEW -->
+        <section id="view-dashboard" class="view-section active">
+          <div class="card" style="background: linear-gradient(135deg, #1E293B, #0F172A); color: #fff;">
+            <h2 style="font-size: 20px; font-weight: 700;">Welcome back, <span id="welcomeName">Karnam Phaneendra</span>!</h2>
+            <p style="font-size: 13.5px; color: #94A3B8; margin-top: 6px;">Campus Placement Roadmap • Full Stack Java Development • Database: placement_tracker</p>
+          </div>
+
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <div class="kpi-icon" style="background: #EFF6FF; color: #2563EB;">CMP</div>
+              <div>
+                <div class="kpi-num" id="kpiCompanies">0</div>
+                <div class="kpi-label">Total Companies</div>
+              </div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-icon" style="background: #ECFDF5; color: #10B981;">APT</div>
+              <div>
+                <div class="kpi-num" id="kpiAptitude">0</div>
+                <div class="kpi-label">Aptitude Tests</div>
+              </div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-icon" style="background: #F5F3FF; color: #7C3AED;">DSA</div>
+              <div>
+                <div class="kpi-num" id="kpiDsa">0/0</div>
+                <div class="kpi-label">DSA Solved</div>
+              </div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-icon" style="background: #FFFBEB; color: #D97706;">INT</div>
+              <div>
+                <div class="kpi-num" id="kpiInterviews">0</div>
+                <div class="kpi-label">Interviews</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Target Companies Overview</div>
+            <div class="table-container">
+              <table id="dashCompanyTable">
+                <thead><tr><th>ID</th><th>Company</th><th>Role</th><th>Date</th><th>Status</th></tr></thead>
+                <tbody><tr><td colspan="5" style="text-align:center;">Loading MySQL data...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- COMPANIES VIEW -->
+        <section id="view-companies" class="view-section">
+          <div class="card">
+            <div class="card-title">Add New Corporate Opportunity</div>
+            <form id="companyForm" onsubmit="addCompany(event)">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Company Name</label>
+                  <input type="text" id="cName" class="form-control" placeholder="e.g. Infosys, TCS" required />
+                </div>
+                <div class="form-group">
+                  <label>Job Role</label>
+                  <input type="text" id="cRole" class="form-control" placeholder="e.g. Systems Engineer" required />
+                </div>
+                <div class="form-group">
+                  <label>Application Date</label>
+                  <input type="date" id="cDate" class="form-control" required />
+                </div>
+                <div class="form-group">
+                  <label>Status</label>
+                  <select id="cStatus" class="form-control">
+                    <option value="Applied">Applied</option>
+                    <option value="Shortlisted">Shortlisted</option>
+                    <option value="Interview">Interview</option>
+                    <option value="Selected">Selected</option>
+                    <option value="Rejected">Rejected</option>
+                  </select>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">+ Add Company</button>
+            </form>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Corporate Pipeline Table</div>
+            <div class="table-container">
+              <table id="companyTable">
+                <thead><tr><th>ID</th><th>Company</th><th>Role</th><th>Applied Date</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- APTITUDE VIEW -->
+        <section id="view-aptitude" class="view-section">
+          <div class="card">
+            <div class="card-title">Record Mock Assessment Test</div>
+            <form id="aptForm" onsubmit="addAptitude(event)">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Assessment Topic</label>
+                  <input type="text" id="aTopic" class="form-control" placeholder="e.g. Quantitative - Time & Work" required />
+                </div>
+                <div class="form-group">
+                  <label>Score (0-100)</label>
+                  <input type="number" id="aScore" class="form-control" min="0" max="100" placeholder="e.g. 85" required />
+                </div>
+                <div class="form-group">
+                  <label>Assessment Date</label>
+                  <input type="date" id="aDate" class="form-control" required />
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">+ Log Assessment</button>
+            </form>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Aptitude Assessment History</div>
+            <div class="table-container">
+              <table id="aptTable">
+                <thead><tr><th>ID</th><th>Topic</th><th>Score</th><th>Test Date</th><th>Performance Grade</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- DSA VIEW -->
+        <section id="view-dsa" class="view-section">
+          <div class="card">
+            <div class="card-title">Log Coding Problem</div>
+            <form id="dsaForm" onsubmit="addDsa(event)">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Topic</label>
+                  <input type="text" id="dTopic" class="form-control" placeholder="e.g. Arrays, Trees, Dynamic Programming" required />
+                </div>
+                <div class="form-group">
+                  <label>Problem Title</label>
+                  <input type="text" id="dName" class="form-control" placeholder="e.g. Two Sum" required />
+                </div>
+                <div class="form-group">
+                  <label>Platform</label>
+                  <select id="dPlatform" class="form-control">
+                    <option value="LeetCode">LeetCode</option>
+                    <option value="HackerRank">HackerRank</option>
+                    <option value="GeeksforGeeks">GeeksforGeeks</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Difficulty</label>
+                  <select id="dDiff" class="form-control">
+                    <option value="Easy">Easy</option>
+                    <option value="Medium" selected>Medium</option>
+                    <option value="Hard">Hard</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Status</label>
+                  <select id="dStatus" class="form-control">
+                    <option value="Solved" selected>Solved</option>
+                    <option value="Revision">Revision</option>
+                    <option value="Pending">Pending</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Date</label>
+                  <input type="date" id="dDate" class="form-control" required />
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">+ Log Problem</button>
+            </form>
+          </div>
+
+          <div class="card">
+            <div class="card-title">DSA Solved Problem Records</div>
+            <div class="table-container">
+              <table id="dsaTable">
+                <thead><tr><th>ID</th><th>Topic</th><th>Problem Title</th><th>Platform</th><th>Difficulty</th><th>Status</th><th>Date</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- INTERVIEWS VIEW -->
+        <section id="view-interviews" class="view-section">
+          <div class="card">
+            <div class="card-title">Schedule Campus Interview Round</div>
+            <form id="invForm" onsubmit="addInterview(event)">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Company Name</label>
+                  <input type="text" id="iCompany" class="form-control" placeholder="e.g. Infosys, TCS" required />
+                </div>
+                <div class="form-group">
+                  <label>Round Name</label>
+                  <input type="text" id="iRound" class="form-control" placeholder="e.g. Technical Round 1, HR Discussion" required />
+                </div>
+                <div class="form-group">
+                  <label>Interview Date</label>
+                  <input type="date" id="iDate" class="form-control" required />
+                </div>
+                <div class="form-group">
+                  <label>Result Status</label>
+                  <select id="iResult" class="form-control">
+                    <option value="Pending">Pending</option>
+                    <option value="Selected">Selected</option>
+                    <option value="Rejected">Rejected</option>
+                  </select>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">+ Schedule Round</button>
+            </form>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Scheduled Recruitment Rounds</div>
+            <div class="table-container">
+              <table id="invTable">
+                <thead><tr><th>ID</th><th>Company</th><th>Round</th><th>Date</th><th>Result</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- REPORTS VIEW -->
+        <section id="view-reports" class="view-section">
+          <div class="card" style="background: linear-gradient(135deg, #1E3A8A, #1E293B); color: #fff;">
+            <div style="font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #93C5FD;">Composite Preparation Metric</div>
+            <div style="display: flex; align-items: baseline; gap: 12px; margin-top: 8px;">
+              <span style="font-size: 42px; font-weight: 800;" id="priScore">0%</span>
+              <span style="font-size: 16px; color: #E2E8F0;">Placement Readiness Index</span>
+            </div>
+            <p style="font-size: 12.5px; color: #CBD5E1; margin-top: 8px;">
+              Formula: (0.25 × Company Rate) + (0.35 × DSA Solved) + (0.25 × Aptitude Excellence) + (0.15 × Interview Clearance)
+            </p>
+          </div>
+
+          <div class="kpi-grid">
+            <div class="card" style="margin-bottom:0;">
+              <div style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Company Conversion</div>
+              <div style="font-size: 24px; font-weight: 800; color: #2563EB; margin-top: 6px;" id="repCompanyRate">0%</div>
+            </div>
+            <div class="card" style="margin-bottom:0;">
+              <div style="font-size: 12px; color: var(--text-muted); font-weight: 600;">DSA Completion</div>
+              <div style="font-size: 24px; font-weight: 800; color: #10B981; margin-top: 6px;" id="repDsaRate">0%</div>
+            </div>
+            <div class="card" style="margin-bottom:0;">
+              <div style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Aptitude Excellence</div>
+              <div style="font-size: 24px; font-weight: 800; color: #7C3AED; margin-top: 6px;" id="repAptRate">0%</div>
+            </div>
+            <div class="card" style="margin-bottom:0;">
+              <div style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Interview Clearance</div>
+              <div style="font-size: 24px; font-weight: 800; color: #D97706; margin-top: 6px;" id="repInvRate">0%</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- DIAGNOSTICS VIEW -->
+        <section id="view-diagnostics" class="view-section">
+          <div class="card">
+            <div class="card-title">MySQL 9.7 Database Diagnostic Health</div>
+            <div id="diagDetails" style="font-size: 14px; line-height: 1.8; color: #334155;">
+              Querying database health...
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+    const todayStr = new Date().toISOString().split('T')[0];
+    ['cDate', 'aDate', 'dDate', 'iDate'].forEach(id => { const el = document.getElementById(id); if (el) el.value = todayStr; });
+
+    // =========================================================================
+    // AUTHENTICATION & SESSION MANAGEMENT
+    // =========================================================================
+
+    function checkAuth() {
+      const savedUser = sessionStorage.getItem('placement_student');
+      if (savedUser) {
+        try {
+          const student = JSON.parse(savedUser);
+          showApp(student);
+          return;
+        } catch (e) {
+          sessionStorage.removeItem('placement_student');
+        }
+      }
+      showLogin();
+    }
+
+    function showLogin() {
+      document.getElementById('loginView').style.display = 'flex';
+      document.getElementById('appContainer').style.display = 'none';
+      const emailField = document.getElementById('loginEmail');
+      if (emailField) emailField.focus();
+    }
+
+    function showApp(student) {
+      document.getElementById('loginView').style.display = 'none';
+      document.getElementById('appContainer').style.display = 'flex';
+
+      if (student) {
+        const name = student.name || 'Karnam Phaneendra';
+        const pin = student.pin || '24A85A6102';
+        document.getElementById('welcomeName').textContent = name;
+        document.getElementById('userDisplay').textContent = name;
+        document.getElementById('topbarUserName').textContent = name;
+        document.getElementById('userPinDisplay').textContent = 'PIN: ' + pin + ' • MySQL 9.7';
+      }
+
+      refreshAll();
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+      const errBox = document.getElementById('loginError');
+      const btn = document.getElementById('btnLogin');
+
+      errBox.style.display = 'none';
+      btn.disabled = true;
+      btn.textContent = 'Verifying with MySQL...';
+
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email, password: password })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          sessionStorage.setItem('placement_student', JSON.stringify(data.student));
+          showToast('Login successful! Welcome, ' + data.student.name);
+          showApp(data.student);
+        } else {
+          errBox.textContent = data.message || 'Invalid email or password. Access denied.';
+          errBox.style.display = 'block';
+        }
+      } catch (err) {
+        errBox.textContent = 'Network or server error. Ensure MySQL and web server are active.';
+        errBox.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Login to Portal';
+      }
+    }
+
+    function handleLogout() {
+      sessionStorage.removeItem('placement_student');
+      document.getElementById('loginPassword').value = '';
+      document.getElementById('loginError').style.display = 'none';
+      showToast('You have been logged out successfully.');
+      showLogin();
+    }
+
+    function clearLoginForm() {
+      document.getElementById('loginEmail').value = '';
+      document.getElementById('loginPassword').value = '';
+      document.getElementById('loginError').style.display = 'none';
+    }
+
+    function autofillDemo() {
+      document.getElementById('loginEmail').value = 'kphani8937@gmail.com';
+      document.getElementById('loginPassword').value = 'Phani@123';
+      document.getElementById('loginError').style.display = 'none';
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.style.display = 'block';
+      setTimeout(() => { t.style.display = 'none'; }, 3000);
+    }
+
+    // =========================================================================
+    // NAVIGATION & VIEWS
+    // =========================================================================
+
+    function showView(name) {
+      document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      const s = document.getElementById('view-' + name);
+      if (s) s.classList.add('active');
+      const titles = {
+        dashboard: 'Executive Dashboard',
+        companies: 'Corporate Opportunities Management',
+        aptitude: 'Aptitude Practice & Performance Tracker',
+        dsa: 'Data Structures & Algorithms Tracker',
+        interviews: 'Campus Recruitment Interview Scheduler',
+        reports: 'Consolidated Progress & Analytics Reports',
+        diagnostics: 'MySQL JDBC Diagnostics Console'
+      };
+      document.getElementById('pageTitle').textContent = titles[name] || 'Placement Tracker';
+      const navs = document.querySelectorAll('.nav-btn');
+      const map = {dashboard:0, companies:1, aptitude:2, dsa:3, interviews:4, reports:5, diagnostics:6};
+      if (map[name] !== undefined) navs[map[name]].classList.add('active');
+      if (name === 'companies') loadCompanies();
+      if (name === 'aptitude') loadAptitude();
+      if (name === 'dsa') loadDsa();
+      if (name === 'interviews') loadInterviews();
+      if (name === 'reports') loadReports();
+      if (name === 'diagnostics') loadDiagnostics();
+    }
+
+    async function refreshAll() {
+      await loadDashboard();
+      loadCompanies();
+      loadAptitude();
+      loadDsa();
+      loadInterviews();
+      loadReports();
+      loadDiagnostics();
+    }
+
+    async function loadDashboard() {
+      try {
+        const res = await fetch('/api/dashboard');
+        const d = await res.json();
+        document.getElementById('kpiCompanies').textContent = d.totalCompanies;
+        document.getElementById('kpiAptitude').textContent = d.totalAptitude;
+        document.getElementById('kpiDsa').textContent = d.solvedDSA + '/' + d.totalDSA;
+        document.getElementById('kpiInterviews').textContent = d.totalInterviews;
+      } catch(e) { console.error(e); }
+
+      try {
+        const res2 = await fetch('/api/companies');
+        const list = await res2.json();
+        const tb = document.querySelector('#dashCompanyTable tbody');
+        tb.innerHTML = '';
+        list.slice(0, 5).forEach(c => {
+          const badgeClass = 'badge-' + (c.status || '').toLowerCase();
+          tb.innerHTML += `<tr><td>${c.id}</td><td><strong>${c.companyName}</strong></td><td>${c.role}</td><td>${c.applicationDate}</td><td><span class="badge ${badgeClass}">${c.status}</span></td></tr>`;
+        });
+      } catch(e) { console.error(e); }
+    }
+
+    async function loadCompanies() {
+      const res = await fetch('/api/companies');
+      const list = await res.json();
+      const tb = document.querySelector('#companyTable tbody');
+      tb.innerHTML = '';
+      list.forEach(c => {
+        const badgeClass = 'badge-' + (c.status || '').toLowerCase();
+        tb.innerHTML += `<tr><td>${c.id}</td><td><strong>${c.companyName}</strong></td><td>${c.role}</td><td>${c.applicationDate}</td><td><span class="badge ${badgeClass}">${c.status}</span></td><td><button class="btn btn-danger" onclick="deleteCompany(${c.id})">Delete</button></td></tr>`;
+      });
+    }
+
+    async function addCompany(e) {
+      e.preventDefault();
+      const name = document.getElementById('cName').value;
+      const role = document.getElementById('cRole').value;
+      const date = document.getElementById('cDate').value;
+      const status = document.getElementById('cStatus').value;
+
+      await fetch('/api/companies', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ companyName: name, role: role, applicationDate: date, status: status })
+      });
+      document.getElementById('cName').value = '';
+      showToast('Company opportunity added!');
+      loadCompanies();
+      loadDashboard();
+    }
+
+    async function deleteCompany(id) {
+      if (!confirm('Are you sure you want to delete this company record?')) return;
+      await fetch('/api/companies/delete', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ id: id })
+      });
+      showToast('Company record deleted');
+      loadCompanies();
+      loadDashboard();
+    }
+
+    async function loadAptitude() {
+      const res = await fetch('/api/aptitude');
+      const list = await res.json();
+      const tb = document.querySelector('#aptTable tbody');
+      tb.innerHTML = '';
+      list.forEach(a => {
+        const badgeClass = 'badge-' + (a.status || '').toLowerCase().replace(/\\s+/g, '-');
+        tb.innerHTML += `<tr><td>${a.id}</td><td><strong>${a.topic}</strong></td><td>${a.score}/100</td><td>${a.testDate}</td><td><span class="badge ${badgeClass}">${a.status}</span></td></tr>`;
+      });
+    }
+
+    async function addAptitude(e) {
+      e.preventDefault();
+      const topic = document.getElementById('aTopic').value;
+      const score = document.getElementById('aScore').value;
+      const date = document.getElementById('aDate').value;
+
+      await fetch('/api/aptitude', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ topic: topic, score: score, testDate: date })
+      });
+      document.getElementById('aTopic').value = '';
+      document.getElementById('aScore').value = '';
+      showToast('Aptitude test logged and auto-graded!');
+      loadAptitude();
+      loadDashboard();
+    }
+
+    async function loadDsa() {
+      const res = await fetch('/api/dsa');
+      const list = await res.json();
+      const tb = document.querySelector('#dsaTable tbody');
+      tb.innerHTML = '';
+      list.forEach(d => {
+        const diffBadge = 'badge-' + (d.difficulty || '').toLowerCase();
+        const statusBadge = 'badge-' + (d.status || '').toLowerCase();
+        tb.innerHTML += `<tr><td>${d.id}</td><td>${d.topic}</td><td><strong>${d.problemName}</strong></td><td>${d.platform}</td><td><span class="badge ${diffBadge}">${d.difficulty}</span></td><td><span class="badge ${statusBadge}">${d.status}</span></td><td>${d.dateSolved}</td></tr>`;
+      });
+    }
+
+    async function addDsa(e) {
+      e.preventDefault();
+      const topic = document.getElementById('dTopic').value;
+      const name = document.getElementById('dName').value;
+      const platform = document.getElementById('dPlatform').value;
+      const diff = document.getElementById('dDiff').value;
+      const status = document.getElementById('dStatus').value;
+      const date = document.getElementById('dDate').value;
+
+      await fetch('/api/dsa', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ topic, problemName: name, platform, difficulty: diff, status, dateSolved: date })
+      });
+      document.getElementById('dName').value = '';
+      showToast('DSA problem logged!');
+      loadDsa();
+      loadDashboard();
+    }
+
+    async function loadInterviews() {
+      const res = await fetch('/api/interviews');
+      const list = await res.json();
+      const tb = document.querySelector('#invTable tbody');
+      tb.innerHTML = '';
+      list.forEach(inv => {
+        const badgeClass = 'badge-' + (inv.result || '').toLowerCase();
+        tb.innerHTML += `<tr><td>${inv.id}</td><td><strong>${inv.companyName}</strong></td><td>${inv.roundName}</td><td>${inv.interviewDate}</td><td><span class="badge ${badgeClass}">${inv.result}</span></td></tr>`;
+      });
+    }
+
+    async function addInterview(e) {
+      e.preventDefault();
+      const company = document.getElementById('iCompany').value;
+      const round = document.getElementById('iRound').value;
+      const date = document.getElementById('iDate').value;
+      const result = document.getElementById('iResult').value;
+
+      await fetch('/api/interviews', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ companyName: company, roundName: round, interviewDate: date, result: result })
+      });
+      document.getElementById('iCompany').value = '';
+      document.getElementById('iRound').value = '';
+      showToast('Interview round scheduled!');
+      loadInterviews();
+      loadDashboard();
+    }
+
+    async function loadReports() {
+      const res = await fetch('/api/reports');
+      const r = await res.json();
+      document.getElementById('priScore').textContent = r.readinessIndex + '%';
+      document.getElementById('repCompanyRate').textContent = r.companyConversion + '%';
+      document.getElementById('repDsaRate').textContent = r.dsaCompletion + '%';
+      document.getElementById('repAptRate').textContent = r.aptitudeExcellence + '%';
+      document.getElementById('repInvRate').textContent = r.interviewClearance + '%';
+    }
+
+    async function loadDiagnostics() {
+      const res = await fetch('/api/status');
+      const s = await res.json();
+      document.getElementById('diagDetails').innerHTML = `
+        <strong>JDBC Driver:</strong> com.mysql.cj.jdbc.Driver<br/>
+        <strong>Database URL:</strong> jdbc:mysql://localhost:3306/placement_tracker<br/>
+        <strong>Database Status:</strong> <span style="color: ${s.dbConnected ? '#10B981':'#EF4444'}; font-weight:700;">${s.status}</span><br/>
+        <strong>MySQL Version:</strong> ${s.dbVersion}<br/>
+        <strong>Localhost Web Port:</strong> ${s.port}<br/><br/>
+        <strong>Table Record Counts in MySQL:</strong><br/>
+        • student: ${s.counts.student} record (Karnam Phaneendra)<br/>
+        • company: ${s.counts.company} records<br/>
+        • aptitude: ${s.counts.aptitude} records<br/>
+        • dsa_progress: ${s.counts.dsa} records<br/>
+        • interview: ${s.counts.interview} records<br/>
+      `;
+    }
+
+    // Check authentication on initial page load
+    checkAuth();
+  </script>
+</body>
+</html>

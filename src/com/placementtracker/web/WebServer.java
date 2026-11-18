@@ -100,7 +100,23 @@ public class WebServer {
         public void handle(HttpExchange exchange) throws IOException {
             String path = exchange.getRequestURI().getPath();
             if (path == null || path.equals("/") || path.equals("/index.html")) {
-                byte[] htmlBytes = getIndexHtml().getBytes(StandardCharsets.UTF_8);
+                byte[] htmlBytes = null;
+                java.io.File[] candidates = new java.io.File[] {
+                    new java.io.File("web/index.html"),
+                    new java.io.File("PlacementPreparationTracker/web/index.html"),
+                    new java.io.File("C:/Users/DELL/workspace/PlacementPreparationTracker/web/index.html")
+                };
+                for (java.io.File f : candidates) {
+                    if (f.exists() && f.isFile()) {
+                        try {
+                            htmlBytes = java.nio.file.Files.readAllBytes(f.toPath());
+                            break;
+                        } catch (Exception ignored) {}
+                    }
+                }
+                if (htmlBytes == null) {
+                    htmlBytes = getIndexHtml().getBytes(StandardCharsets.UTF_8);
+                }
                 exchange.getResponseHeaders().set("Content-Type", "text/html; charset=UTF-8");
                 exchange.sendResponseHeaders(200, htmlBytes.length);
                 OutputStream os = exchange.getResponseBody();
