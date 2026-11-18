@@ -110,6 +110,31 @@ public class DSAProgressDAO {
 
         return false;
     }
+
+    public boolean updateProblemFull(int id, String topic, String name, String platform, String diff, String status, java.sql.Date date) {
+
+        String query = "UPDATE dsa_progress SET topic=?, problem_name=?, platform=?, difficulty=?, status=?, date_solved=? WHERE problem_id=?";
+
+        try (Connection c = DBConnection.getConnection();
+             PreparedStatement ps = c.prepareStatement(query)) {
+
+            ps.setString(1, topic);
+            ps.setString(2, name);
+            ps.setString(3, platform);
+            ps.setString(4, diff);
+            ps.setString(5, status);
+            ps.setDate(6, date);
+            ps.setInt(7, id);
+
+            int rows = ps.executeUpdate();
+            return rows > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
     public boolean deleteProblem(int problemId) {
 
         String query = "DELETE FROM dsa_progress WHERE problem_id = ?";

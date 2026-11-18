@@ -92,6 +92,31 @@ public class InterviewDAO {
 
     }
 
+    // FULL UPDATE FOR MODIFY FEATURE
+
+    public boolean updateInterviewFull(int id, String companyName, String roundName, java.sql.Date date, String result) {
+
+        String sql = "UPDATE interview SET company_name=?, round_name=?, interview_date=?, result=? WHERE interview_id=?";
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, companyName);
+            ps.setString(2, roundName);
+            ps.setDate(3, date);
+            ps.setString(4, result);
+            ps.setInt(5, id);
+
+            return ps.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+
+    }
+
     // DELETE
 
     public boolean deleteInterview(int id) {

@@ -117,6 +117,28 @@ public class AptitudeDAO {
 
     }
 
+    public boolean updateResultFull(int id, String topic, int score, java.sql.Date date, String status) {
+
+        String query = "UPDATE aptitude SET topic=?, score=?, test_date=?, status=? WHERE aptitude_id=?";
+
+        try (Connection c = DBConnection.getConnection();
+             PreparedStatement ps = c.prepareStatement(query)) {
+
+            ps.setString(1, topic);
+            ps.setInt(2, score);
+            ps.setDate(3, date);
+            ps.setString(4, status);
+            ps.setInt(5, id);
+
+            return ps.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
     // ===========================
     // DELETE
     // ===========================

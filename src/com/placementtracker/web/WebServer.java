@@ -56,10 +56,17 @@ public class WebServer {
             server.createContext("/api/login", new LoginHandler());
             server.createContext("/api/dashboard", new DashboardHandler());
             server.createContext("/api/companies", new CompanyHandler());
+            server.createContext("/api/companies/modify", new CompanyModifyHandler());
             server.createContext("/api/companies/delete", new CompanyDeleteHandler());
             server.createContext("/api/aptitude", new AptitudeHandler());
+            server.createContext("/api/aptitude/modify", new AptitudeModifyHandler());
+            server.createContext("/api/aptitude/delete", new AptitudeDeleteHandler());
             server.createContext("/api/dsa", new DSAHandler());
+            server.createContext("/api/dsa/modify", new DSAModifyHandler());
+            server.createContext("/api/dsa/delete", new DSADeleteHandler());
             server.createContext("/api/interviews", new InterviewHandler());
+            server.createContext("/api/interviews/modify", new InterviewModifyHandler());
+            server.createContext("/api/interviews/delete", new InterviewDeleteHandler());
             server.createContext("/api/reports", new ReportsHandler());
 
             server.setExecutor(java.util.concurrent.Executors.newCachedThreadPool());
@@ -506,6 +513,217 @@ public class WebServer {
         }
     }
 
+    static class CompanyModifyHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+            if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+                sendResponse(exchange, 405, "{\"error\":\"Method Not Allowed\"}", "application/json");
+                return;
+            }
+            Map<String, String> p = parseFormData(exchange);
+            String idStr = p.get("id");
+            String name = p.get("companyName");
+            String role = p.get("role");
+            String dateStr = p.get("applicationDate");
+            String status = p.get("status");
+
+            if (idStr == null || name == null || role == null) {
+                sendResponse(exchange, 400, "{\"success\":false,\"message\":\"Missing required fields\"}", "application/json");
+                return;
+            }
+            try {
+                int id = Integer.parseInt(idStr.trim());
+                Date date;
+                try {
+                    date = (dateStr != null && !dateStr.isEmpty()) ? Date.valueOf(dateStr.trim()) : new Date(System.currentTimeMillis());
+                } catch (Exception e) {
+                    date = new Date(System.currentTimeMillis());
+                }
+                boolean ok = companyDAO.updateCompanyFull(id, name.trim(), role.trim(), date, status != null ? status.trim() : "Applied");
+                sendResponse(exchange, 200, "{\"success\":" + ok + ",\"message\":\"" + (ok ? "Company record updated successfully" : "Update failed") + "\"}", "application/json");
+            } catch (Exception e) {
+                sendResponse(exchange, 400, "{\"success\":false,\"message\":\"" + escapeJson(e.getMessage()) + "\"}", "application/json");
+            }
+        }
+    }
+
+    static class InterviewModifyHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+            if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+                sendResponse(exchange, 405, "{\"error\":\"Method Not Allowed\"}", "application/json");
+                return;
+            }
+            Map<String, String> p = parseFormData(exchange);
+            String idStr = p.get("id");
+            String companyName = p.get("companyName");
+            String roundName = p.get("roundName");
+            String dateStr = p.get("interviewDate");
+            String result = p.get("result");
+
+            if (idStr == null || companyName == null || roundName == null) {
+                sendResponse(exchange, 400, "{\"success\":false,\"message\":\"Missing required fields\"}", "application/json");
+                return;
+            }
+            try {
+                int id = Integer.parseInt(idStr.trim());
+                Date date;
+                try {
+                    date = (dateStr != null && !dateStr.isEmpty()) ? Date.valueOf(dateStr.trim()) : new Date(System.currentTimeMillis());
+                } catch (Exception e) {
+                    date = new Date(System.currentTimeMillis());
+                }
+                boolean ok = interviewDAO.updateInterviewFull(id, companyName.trim(), roundName.trim(), date, result != null ? result.trim() : "Pending");
+                sendResponse(exchange, 200, "{\"success\":" + ok + ",\"message\":\"" + (ok ? "Interview record updated successfully" : "Update failed") + "\"}", "application/json");
+            } catch (Exception e) {
+                sendResponse(exchange, 400, "{\"success\":false,\"message\":\"" + escapeJson(e.getMessage()) + "\"}", "application/json");
+            }
+        }
+    }
+
+    static class InterviewDeleteHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+            if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+                sendResponse(exchange, 405, "{\"error\":\"Method Not Allowed\"}", "application/json");
+                return;
+            }
+            Map<String, String> p = parseFormData(exchange);
+            String idStr = p.get("id");
+            if (idStr != null) {
+                try {
+                    int id = Integer.parseInt(idStr.trim());
+                    boolean ok = interviewDAO.deleteInterview(id);
+                    sendResponse(exchange, 200, "{\"success\":" + ok + ",\"message\":\"" + (ok ? "Deleted interview record" : "Delete failed") + "\"}", "application/json");
+                    return;
+                } catch (NumberFormatException ignored) {}
+            }
+            sendResponse(exchange, 400, "{\"success\":false,\"message\":\"Invalid interview ID\"}", "application/json");
+        }
+    }
+
+    static class AptitudeModifyHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+            if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+                sendResponse(exchange, 405, "{\"error\":\"Method Not Allowed\"}", "application/json");
+                return;
+            }
+            Map<String, String> p = parseFormData(exchange);
+            String idStr = p.get("id");
+            String topic = p.get("topic");
+            String scoreStr = p.get("score");
+            String dateStr = p.get("testDate");
+            String status = p.get("status");
+
+            if (idStr == null || topic == null || scoreStr == null) {
+                sendResponse(exchange, 400, "{\"success\":false,\"message\":\"Missing required fields\"}", "application/json");
+                return;
+            }
+            try {
+                int id = Integer.parseInt(idStr.trim());
+                int score = Integer.parseInt(scoreStr.trim());
+                Date date;
+                try {
+                    date = (dateStr != null && !dateStr.isEmpty()) ? Date.valueOf(dateStr.trim()) : new Date(System.currentTimeMillis());
+                } catch (Exception e) {
+                    date = new Date(System.currentTimeMillis());
+                }
+                if (status == null || status.trim().isEmpty()) {
+                    if (score >= 85) status = "Excellent";
+                    else if (score >= 70) status = "Good";
+                    else if (score >= 50) status = "Average";
+                    else status = "Needs Improvement";
+                }
+                boolean ok = aptitudeDAO.updateResultFull(id, topic.trim(), score, date, status.trim());
+                sendResponse(exchange, 200, "{\"success\":" + ok + ",\"message\":\"" + (ok ? "Aptitude record updated successfully" : "Update failed") + "\"}", "application/json");
+            } catch (Exception e) {
+                sendResponse(exchange, 400, "{\"success\":false,\"message\":\"" + escapeJson(e.getMessage()) + "\"}", "application/json");
+            }
+        }
+    }
+
+    static class AptitudeDeleteHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+            if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+                sendResponse(exchange, 405, "{\"error\":\"Method Not Allowed\"}", "application/json");
+                return;
+            }
+            Map<String, String> p = parseFormData(exchange);
+            String idStr = p.get("id");
+            if (idStr != null) {
+                try {
+                    int id = Integer.parseInt(idStr.trim());
+                    boolean ok = aptitudeDAO.deleteResult(id);
+                    sendResponse(exchange, 200, "{\"success\":" + ok + ",\"message\":\"" + (ok ? "Deleted aptitude record" : "Delete failed") + "\"}", "application/json");
+                    return;
+                } catch (NumberFormatException ignored) {}
+            }
+            sendResponse(exchange, 400, "{\"success\":false,\"message\":\"Invalid aptitude ID\"}", "application/json");
+        }
+    }
+
+    static class DSAModifyHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+            if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+                sendResponse(exchange, 405, "{\"error\":\"Method Not Allowed\"}", "application/json");
+                return;
+            }
+            Map<String, String> p = parseFormData(exchange);
+            String idStr = p.get("id");
+            String topic = p.get("topic");
+            String problemName = p.get("problemName");
+            String platform = p.get("platform");
+            String difficulty = p.get("difficulty");
+            String status = p.get("status");
+            String dateStr = p.get("dateSolved");
+
+            if (idStr == null || topic == null || problemName == null) {
+                sendResponse(exchange, 400, "{\"success\":false,\"message\":\"Missing required fields\"}", "application/json");
+                return;
+            }
+            try {
+                int id = Integer.parseInt(idStr.trim());
+                Date date;
+                try {
+                    date = (dateStr != null && !dateStr.isEmpty()) ? Date.valueOf(dateStr.trim()) : new Date(System.currentTimeMillis());
+                } catch (Exception e) {
+                    date = new Date(System.currentTimeMillis());
+                }
+                boolean ok = dsaDAO.updateProblemFull(id, topic.trim(), problemName.trim(),
+                        platform != null ? platform.trim() : "LeetCode",
+                        difficulty != null ? difficulty.trim() : "Medium",
+                        status != null ? status.trim() : "Solved", date);
+                sendResponse(exchange, 200, "{\"success\":" + ok + ",\"message\":\"" + (ok ? "DSA problem updated successfully" : "Update failed") + "\"}", "application/json");
+            } catch (Exception e) {
+                sendResponse(exchange, 400, "{\"success\":false,\"message\":\"" + escapeJson(e.getMessage()) + "\"}", "application/json");
+            }
+        }
+    }
+
+    static class DSADeleteHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+            if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+                sendResponse(exchange, 405, "{\"error\":\"Method Not Allowed\"}", "application/json");
+                return;
+            }
+            Map<String, String> p = parseFormData(exchange);
+            String idStr = p.get("id");
+            if (idStr != null) {
+                try {
+                    int id = Integer.parseInt(idStr.trim());
+                    boolean ok = dsaDAO.deleteProblem(id);
+                    sendResponse(exchange, 200, "{\"success\":" + ok + ",\"message\":\"" + (ok ? "Deleted DSA problem" : "Delete failed") + "\"}", "application/json");
+                    return;
+                } catch (NumberFormatException ignored) {}
+            }
+            sendResponse(exchange, 400, "{\"success\":false,\"message\":\"Invalid problem ID\"}", "application/json");
+        }
+    }
+
     static class ReportsHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
@@ -543,10 +761,36 @@ public class WebServer {
                     + "\"interviewClearance\":" + String.format(Locale.US, "%.1f", interviewRate) + ","
                     + "\"readinessIndex\":" + String.format(Locale.US, "%.1f", readinessIndex) + ","
                     + "\"summary\":{"
-                    + "\"companies\":{\"total\":" + totalCompanies + ",\"selected\":" + selectedCompanies + "},"
-                    + "\"dsa\":{\"total\":" + totalDsa + ",\"solved\":" + solvedDsa + "},"
-                    + "\"aptitude\":{\"total\":" + totalAptitude + ",\"excellent\":" + excellentAptitude + "},"
-                    + "\"interview\":{\"total\":" + totalInterviews + ",\"selected\":" + selectedInterviews + "}"
+                    + "\"companies\":{"
+                        + "\"total\":" + totalCompanies + ","
+                        + "\"applied\":" + (companyReport != null ? companyReport.getApplied() : 0) + ","
+                        + "\"shortlisted\":" + (companyReport != null ? companyReport.getShortlisted() : 0) + ","
+                        + "\"interview\":" + (companyReport != null ? companyReport.getInterview() : 0) + ","
+                        + "\"selected\":" + selectedCompanies + ","
+                        + "\"rejected\":" + (companyReport != null ? companyReport.getRejected() : 0)
+                    + "},"
+                    + "\"dsa\":{"
+                        + "\"total\":" + totalDsa + ","
+                        + "\"solved\":" + solvedDsa + ","
+                        + "\"easy\":" + (dsaReport != null ? dsaReport.getEasyProblems() : 0) + ","
+                        + "\"medium\":" + (dsaReport != null ? dsaReport.getMediumProblems() : 0) + ","
+                        + "\"hard\":" + (dsaReport != null ? dsaReport.getHardProblems() : 0) + ","
+                        + "\"revision\":" + (dsaReport != null ? dsaReport.getRevisionProblems() : 0) + ","
+                        + "\"pending\":" + (dsaReport != null ? dsaReport.getPendingProblems() : 0)
+                    + "},"
+                    + "\"aptitude\":{"
+                        + "\"total\":" + totalAptitude + ","
+                        + "\"excellent\":" + excellentAptitude + ","
+                        + "\"good\":" + (aptitudeReport != null ? aptitudeReport.getGood() : 0) + ","
+                        + "\"average\":" + (aptitudeReport != null ? aptitudeReport.getAverage() : 0) + ","
+                        + "\"needsImprovement\":" + (aptitudeReport != null ? aptitudeReport.getNeedsImprovement() : 0)
+                    + "},"
+                    + "\"interview\":{"
+                        + "\"total\":" + totalInterviews + ","
+                        + "\"selected\":" + selectedInterviews + ","
+                        + "\"pending\":" + (interviewReport != null ? interviewReport.getPending() : 0) + ","
+                        + "\"rejected\":" + (interviewReport != null ? interviewReport.getRejected() : 0)
+                    + "}"
                     + "}"
                     + "}";
 

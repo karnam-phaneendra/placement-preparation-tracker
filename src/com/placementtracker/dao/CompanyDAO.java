@@ -101,6 +101,29 @@ public class CompanyDAO {
         }
 
     }
+
+    public boolean updateCompanyFull(int companyId, String name, String role, java.sql.Date date, String status) {
+
+        String query = "UPDATE company SET company_name=?, role=?, application_date=?, status=? WHERE company_id=?";
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(query)) {
+
+            ps.setString(1, name);
+            ps.setString(2, role);
+            ps.setDate(3, date);
+            ps.setString(4, status);
+            ps.setInt(5, companyId);
+
+            int rows = ps.executeUpdate();
+            return rows > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
     public boolean deleteCompany(int companyId) {
 
         try {

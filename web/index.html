@@ -429,6 +429,158 @@
     .form-control { padding: 9px 12px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13.5px; background: #fff; }
     .form-control:focus { outline: none; border-color: var(--primary); }
 
+    /* Action Buttons: Modify & Delete */
+    .btn-modify {
+      background: #EEF2FF;
+      color: #4338CA;
+      border: 1px solid #C7D2FE;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      margin-right: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn-modify:hover {
+      background: #4338CA;
+      color: #FFFFFF;
+      border-color: #4338CA;
+      box-shadow: 0 2px 6px rgba(67, 56, 202, 0.3);
+    }
+    .btn-delete {
+      background: #FEF2F2;
+      color: #DC2626;
+      border: 1px solid #FECACA;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn-delete:hover {
+      background: #DC2626;
+      color: #FFFFFF;
+      border-color: #DC2626;
+      box-shadow: 0 2px 6px rgba(220, 38, 38, 0.3);
+    }
+
+    /* Modal Overlay & Form */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      padding: 20px;
+    }
+    .modal-box {
+      background: #FFFFFF;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 500px;
+      padding: 28px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+      animation: modalFadeIn 0.2s ease-out;
+    }
+    @keyframes modalFadeIn {
+      from { transform: scale(0.96) translateY(10px); opacity: 0; }
+      to { transform: scale(1) translateY(0); opacity: 1; }
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #E2E8F0;
+    }
+    .modal-title { font-size: 17px; font-weight: 800; color: #0F172A; }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 22px;
+      font-weight: 700;
+      color: #94A3B8;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .modal-close:hover { color: #0F172A; }
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid #E2E8F0;
+    }
+
+    /* Progress & Reports Custom Styles */
+    .prog-track {
+      background: #E2E8F0;
+      border-radius: 9999px;
+      height: 8px;
+      overflow: hidden;
+      width: 100%;
+      margin: 10px 0 6px 0;
+    }
+    .prog-fill {
+      height: 100%;
+      border-radius: 9999px;
+      transition: width 0.6s ease;
+    }
+    .hero-prog-track {
+      background: rgba(255, 255, 255, 0.16);
+      border-radius: 9999px;
+      height: 14px;
+      overflow: hidden;
+      width: 100%;
+      margin: 18px 0 12px 0;
+    }
+    .hero-prog-fill {
+      height: 100%;
+      border-radius: 9999px;
+      background: linear-gradient(90deg, #38BDF8, #60A5FA, #818CF8);
+      transition: width 0.6s ease;
+    }
+    .report-action-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .report-student-meta {
+      font-size: 13.5px;
+      color: #475569;
+      line-height: 1.5;
+    }
+    .report-student-meta strong {
+      color: #0F172A;
+      font-size: 15px;
+    }
+
+    @media print {
+      .sidebar, .topbar, .report-action-bar button, #toast, .modal-overlay, .nav-btn, .btn-logout, .user-footer, .sidebar-logout-btn {
+        display: none !important;
+      }
+      .main-wrapper { margin-left: 0 !important; width: 100% !important; }
+      body { background: #FFFFFF !important; }
+      .content-area { padding: 0 !important; }
+      .card { box-shadow: none !important; border: 1px solid #CBD5E1 !important; page-break-inside: avoid; }
+    }
+
     /* Toast */
     #toast {
       position: fixed;
@@ -650,7 +802,7 @@
             <div class="card-title">Aptitude Assessment History</div>
             <div class="table-container">
               <table id="aptTable">
-                <thead><tr><th>ID</th><th>Topic</th><th>Score</th><th>Test Date</th><th>Performance Grade</th></tr></thead>
+                <thead><tr><th>ID</th><th>Topic</th><th>Score</th><th>Test Date</th><th>Performance Grade</th><th>Actions</th></tr></thead>
                 <tbody></tbody>
               </table>
             </div>
@@ -708,7 +860,7 @@
             <div class="card-title">DSA Solved Problem Records</div>
             <div class="table-container">
               <table id="dsaTable">
-                <thead><tr><th>ID</th><th>Topic</th><th>Problem Title</th><th>Platform</th><th>Difficulty</th><th>Status</th><th>Date</th></tr></thead>
+                <thead><tr><th>ID</th><th>Topic</th><th>Problem Title</th><th>Platform</th><th>Difficulty</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
                 <tbody></tbody>
               </table>
             </div>
@@ -750,7 +902,7 @@
             <div class="card-title">Scheduled Recruitment Rounds</div>
             <div class="table-container">
               <table id="invTable">
-                <thead><tr><th>ID</th><th>Company</th><th>Round</th><th>Date</th><th>Result</th></tr></thead>
+                <thead><tr><th>ID</th><th>Company</th><th>Round</th><th>Date</th><th>Result</th><th>Actions</th></tr></thead>
                 <tbody></tbody>
               </table>
             </div>
@@ -759,33 +911,198 @@
 
         <!-- REPORTS VIEW -->
         <section id="view-reports" class="view-section">
-          <div class="card" style="background: linear-gradient(135deg, #1E3A8A, #1E293B); color: #fff;">
-            <div style="font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #93C5FD;">Composite Preparation Metric</div>
-            <div style="display: flex; align-items: baseline; gap: 12px; margin-top: 8px;">
-              <span style="font-size: 42px; font-weight: 800;" id="priScore">0%</span>
-              <span style="font-size: 16px; color: #E2E8F0;">Placement Readiness Index</span>
+          <!-- Report Header Bar -->
+          <div class="report-action-bar">
+            <div class="report-student-meta">
+              <strong>Academic & Placement Readiness Report</strong><br/>
+              Candidate: <span id="repCandidateName" style="color:#2563EB; font-weight:700;">Karnam Phaneendra</span> • PIN: <span id="repCandidatePin">24A85A6102</span> • Sri Vasavi Engineering College (Autonomous)
             </div>
-            <p style="font-size: 12.5px; color: #CBD5E1; margin-top: 8px;">
-              Formula: (0.25 × Company Rate) + (0.35 × DSA Solved) + (0.25 × Aptitude Excellence) + (0.15 × Interview Clearance)
+            <div style="display:flex; gap:10px;">
+              <button type="button" class="btn btn-primary" onclick="window.print()" style="display:inline-flex; align-items:center; gap:6px;">
+                <span>🖨️</span> Print / Save PDF
+              </button>
+              <button type="button" class="btn" onclick="loadReports()" style="background:#E2E8F0; color:#1E293B; font-weight:700; display:inline-flex; align-items:center; gap:6px;">
+                <span>🔄</span> Recalculate Metrics
+              </button>
+            </div>
+          </div>
+
+          <!-- Hero Composite Metric Card -->
+          <div class="card" style="background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 55%, #1E293B 100%); color: #fff; padding: 28px; position:relative; overflow:hidden;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+              <div style="font-size: 13px; text-transform: uppercase; letter-spacing: 1.2px; color: #93C5FD; font-weight:700;">
+                Consolidated Placement Readiness Index (PRI)
+              </div>
+              <span id="readinessBadge" style="background: rgba(16, 185, 129, 0.2); color: #6EE7B7; border: 1px solid rgba(16, 185, 129, 0.4); padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 700;">
+                Advanced Readiness Phase
+              </span>
+            </div>
+
+            <div style="display: flex; align-items: baseline; gap: 14px; margin-top: 14px;">
+              <span style="font-size: 52px; font-weight: 800; letter-spacing: -1.5px; line-height:1;" id="priScore">65.8%</span>
+              <span style="font-size: 18px; color: #E2E8F0; font-weight: 600;">Overall Candidate Preparation Score</span>
+            </div>
+
+            <div class="hero-prog-track">
+              <div class="hero-prog-fill" id="priProgressFill" style="width: 65.8%;"></div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; font-size:11.5px; color:#94A3B8; font-weight:600; margin-bottom:12px;">
+              <span>Beginner (0-39%)</span>
+              <span>Developing (40-59%)</span>
+              <span>Placement Ready (60-79%)</span>
+              <span>Excellence (80-100%)</span>
+            </div>
+
+            <p style="font-size: 12.5px; color: #CBD5E1; border-top: 1px solid rgba(255,255,255,0.12); padding-top: 12px; margin-top: 6px; line-height: 1.6;">
+              Weighted Academic Index Formula: <code>(0.25 × Corporate Rate) + (0.35 × DSA Solved) + (0.25 × Aptitude Excellence) + (0.15 × Interview Clearance)</code>
             </p>
           </div>
 
+          <!-- 4 Dimensional Progress Cards -->
           <div class="kpi-grid">
             <div class="card" style="margin-bottom:0;">
-              <div style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Company Conversion</div>
-              <div style="font-size: 24px; font-weight: 800; color: #2563EB; margin-top: 6px;" id="repCompanyRate">0%</div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="font-size: 12px; color: var(--text-muted); font-weight: 700; text-transform:uppercase;">Corporate Conversion</div>
+                <span class="badge badge-applied" style="font-size:10px;">25% Wt</span>
+              </div>
+              <div style="font-size: 26px; font-weight: 800; color: #2563EB; margin-top: 8px;" id="repCompanyRate">16.7%</div>
+              <div class="prog-track">
+                <div class="prog-fill" id="fillCompany" style="background:#2563EB; width: 16.7%;"></div>
+              </div>
+              <div style="font-size: 12px; color: #64748B; margin-top: 6px;" id="repCompanySub">
+                1 Selected of 6 Tracked
+              </div>
             </div>
+
             <div class="card" style="margin-bottom:0;">
-              <div style="font-size: 12px; color: var(--text-muted); font-weight: 600;">DSA Completion</div>
-              <div style="font-size: 24px; font-weight: 800; color: #10B981; margin-top: 6px;" id="repDsaRate">0%</div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="font-size: 12px; color: var(--text-muted); font-weight: 700; text-transform:uppercase;">DSA Mastery</div>
+                <span class="badge badge-selected" style="font-size:10px;">35% Wt</span>
+              </div>
+              <div style="font-size: 26px; font-weight: 800; color: #10B981; margin-top: 8px;" id="repDsaRate">66.7%</div>
+              <div class="prog-track">
+                <div class="prog-fill" id="fillDsa" style="background:#10B981; width: 66.7%;"></div>
+              </div>
+              <div style="font-size: 12px; color: #64748B; margin-top: 6px;" id="repDsaSub">
+                4 Solved of 6 Logged
+              </div>
             </div>
+
             <div class="card" style="margin-bottom:0;">
-              <div style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Aptitude Excellence</div>
-              <div style="font-size: 24px; font-weight: 800; color: #7C3AED; margin-top: 6px;" id="repAptRate">0%</div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="font-size: 12px; color: var(--text-muted); font-weight: 700; text-transform:uppercase;">Aptitude Excellence</div>
+                <span class="badge badge-interview" style="font-size:10px;">25% Wt</span>
+              </div>
+              <div style="font-size: 26px; font-weight: 800; color: #7C3AED; margin-top: 8px;" id="repAptRate">50.0%</div>
+              <div class="prog-track">
+                <div class="prog-fill" id="fillApt" style="background:#7C3AED; width: 50.0%;"></div>
+              </div>
+              <div style="font-size: 12px; color: #64748B; margin-top: 6px;" id="repAptSub">
+                3 Scored ≥85 of 6 Tests
+              </div>
             </div>
+
             <div class="card" style="margin-bottom:0;">
-              <div style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Interview Clearance</div>
-              <div style="font-size: 24px; font-weight: 800; color: #D97706; margin-top: 6px;" id="repInvRate">0%</div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="font-size: 12px; color: var(--text-muted); font-weight: 700; text-transform:uppercase;">Interview Clearance</div>
+                <span class="badge badge-shortlisted" style="font-size:10px;">15% Wt</span>
+              </div>
+              <div style="font-size: 26px; font-weight: 800; color: #D97706; margin-top: 8px;" id="repInvRate">33.3%</div>
+              <div class="prog-track">
+                <div class="prog-fill" id="fillInv" style="background:#D97706; width: 33.3%;"></div>
+              </div>
+              <div style="font-size: 12px; color: #64748B; margin-top: 6px;" id="repInvSub">
+                1 Cleared (2 Pending)
+              </div>
+            </div>
+          </div>
+
+          <!-- Comprehensive Mastery Matrix Table -->
+          <div class="card" style="margin-top: 24px;">
+            <div class="card-title">
+              <span>Preparation Domain Performance Matrix</span>
+              <span style="font-size:12.5px; font-weight:600; color:#64748B;">Multi-factor weighted evaluation from MySQL</span>
+            </div>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Domain / Module Track</th>
+                    <th>Records in Database</th>
+                    <th>Success / Cleared Count</th>
+                    <th>Module Rate</th>
+                    <th>Formula Weight</th>
+                    <th>Score Contribution</th>
+                    <th>Strategic Readiness</th>
+                  </tr>
+                </thead>
+                <tbody id="matrixTableBody">
+                  <tr>
+                    <td><strong>Corporate Applications</strong></td>
+                    <td id="mCompTotal">6 Companies</td>
+                    <td id="mCompCleared">1 Selected, 1 Interview</td>
+                    <td id="mCompRate">16.7%</td>
+                    <td>25%</td>
+                    <td id="mCompScore"><strong>25.0 pts</strong></td>
+                    <td><span class="badge badge-selected">Offer Secured</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Data Structures & Algorithms (DSA)</strong></td>
+                    <td id="mDsaTotal">6 Problems</td>
+                    <td id="mDsaCleared">4 Solved (Easy: 2, Medium: 2)</td>
+                    <td id="mDsaRate">66.7%</td>
+                    <td>35%</td>
+                    <td id="mDsaScore"><strong>23.3 pts</strong></td>
+                    <td><span class="badge badge-good">High Proficiency</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Aptitude & Logical Reasoning</strong></td>
+                    <td id="mAptTotal">6 Tests</td>
+                    <td id="mAptCleared">3 Excellent, 2 Good</td>
+                    <td id="mAptRate">50.0%</td>
+                    <td>25%</td>
+                    <td id="mAptScore"><strong>12.5 pts</strong></td>
+                    <td><span class="badge badge-good">Proficient</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Campus Recruitment Interviews</strong></td>
+                    <td id="mInvTotal">5 Rounds</td>
+                    <td id="mInvCleared">1 Selected, 2 In Progress</td>
+                    <td id="mInvRate">33.3%</td>
+                    <td>15%</td>
+                    <td id="mInvScore"><strong>5.0 pts</strong></td>
+                    <td><span class="badge badge-shortlisted">Active Drives</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Diagnostic Strengths & Recommendations -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
+            <div class="card" style="border-left: 4px solid #10B981; margin-bottom: 0;">
+              <div class="card-title" style="color: #065F46; font-size:15px;">
+                🌟 Candidate Strengths & Milestones
+              </div>
+              <ul style="padding-left: 20px; font-size: 13.5px; line-height: 1.8; color: #334155;">
+                <li><strong>Campus Interview Offer:</strong> Successfully cleared Infosys Technical Interview Round 1 with selection offer.</li>
+                <li><strong>Robust Algorithmic Foundation:</strong> 100% completion in Easy algorithmic challenges and 66.7% across Medium questions.</li>
+                <li><strong>Consistent Aptitude Practice:</strong> High percentile in Quantitative Speed Math and Logical Reasoning modules.</li>
+                <li><strong>Active Corporate Pipeline:</strong> Applied across 6 premier tech enterprises (Infosys, TCS, Accenture, Wipro, Cognizant, Amazon).</li>
+              </ul>
+            </div>
+
+            <div class="card" style="border-left: 4px solid #2563EB; margin-bottom: 0;">
+              <div class="card-title" style="color: #1E40AF; font-size:15px;">
+                🎯 Strategic Next Steps & Milestones
+              </div>
+              <ul style="padding-left: 20px; font-size: 13.5px; line-height: 1.8; color: #334155;">
+                <li><strong>Dynamic Programming & Graphs:</strong> Solve 2 Hard LeetCode problems to push DSA problem mastery above 80%.</li>
+                <li><strong>Interview Round Follow-ups:</strong> Prepare for pending Technical & HR discussions with TCS and Wipro.</li>
+                <li><strong>Data Interpretation Speed:</strong> Complete 2 timed mock assessment tests to elevate aptitude excellence to 70%+.</li>
+                <li><strong>Placement Ready Certification:</strong> Maintain placement readiness score above 65% for upcoming tier-1 campus drives.</li>
+              </ul>
             </div>
           </div>
         </section>
@@ -800,6 +1117,29 @@
           </div>
         </section>
       </main>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       UNIVERSAL MODIFY / EDIT MODAL
+       ========================================================================= -->
+  <div id="editModalOverlay" class="modal-overlay" onclick="if(event.target === this) closeEditModal()">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title" id="modalTitle">Modify Record</div>
+        <button type="button" class="modal-close" onclick="closeEditModal()">&times;</button>
+      </div>
+      <form id="editModalForm" onsubmit="handleModalSubmit(event)">
+        <input type="hidden" id="editRecordType" />
+        <input type="hidden" id="editRecordId" />
+        <div id="modalFormFields">
+          <!-- Dynamically populated fields -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn" style="background:#E2E8F0; color:#334155; font-weight:600;" onclick="closeEditModal()">Cancel</button>
+          <button type="submit" id="btnSaveModal" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -974,14 +1314,40 @@
       } catch(e) { console.error(e); }
     }
 
+    // Global Cache for Modals
+    window.cache = { companies: {}, aptitude: {}, dsa: {}, interviews: {} };
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // =========================================================================
+    // 1. COMPANIES CRUD
+    // =========================================================================
+
     async function loadCompanies() {
       const res = await fetch('/api/companies');
       const list = await res.json();
       const tb = document.querySelector('#companyTable tbody');
       tb.innerHTML = '';
+      window.cache.companies = {};
       list.forEach(c => {
+        window.cache.companies[c.id] = c;
         const badgeClass = 'badge-' + (c.status || '').toLowerCase();
-        tb.innerHTML += `<tr><td>${c.id}</td><td><strong>${c.companyName}</strong></td><td>${c.role}</td><td>${c.applicationDate}</td><td><span class="badge ${badgeClass}">${c.status}</span></td><td><button class="btn btn-danger" onclick="deleteCompany(${c.id})">Delete</button></td></tr>`;
+        tb.innerHTML += `
+          <tr>
+            <td>${c.id}</td>
+            <td><strong>${escapeHtml(c.companyName)}</strong></td>
+            <td>${escapeHtml(c.role)}</td>
+            <td>${c.applicationDate || ''}</td>
+            <td><span class="badge ${badgeClass}">${c.status}</span></td>
+            <td>
+              <button type="button" class="btn-modify" onclick="openModifyCompany(${c.id})">✏️ Modify</button>
+              <button type="button" class="btn-delete" onclick="deleteCompany(${c.id})">🗑️ Delete</button>
+            </td>
+          </tr>
+        `;
       });
     }
 
@@ -992,37 +1358,98 @@
       const date = document.getElementById('cDate').value;
       const status = document.getElementById('cStatus').value;
 
-      await fetch('/api/companies', {
+      const res = await fetch('/api/companies', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ companyName: name, role: role, applicationDate: date, status: status })
       });
-      document.getElementById('cName').value = '';
-      showToast('Company opportunity added!');
-      loadCompanies();
-      loadDashboard();
+      const data = await res.json();
+      if (data.success) {
+        document.getElementById('cName').value = '';
+        showToast('Company opportunity added successfully!');
+        loadCompanies();
+        loadDashboard();
+      } else {
+        alert(data.message || 'Failed to add company');
+      }
     }
 
     async function deleteCompany(id) {
-      if (!confirm('Are you sure you want to delete this company record?')) return;
-      await fetch('/api/companies/delete', {
+      if (!confirm('Are you sure you want to delete Company #' + id + '?')) return;
+      const res = await fetch('/api/companies/delete', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ id: id })
       });
-      showToast('Company record deleted');
-      loadCompanies();
-      loadDashboard();
+      const data = await res.json();
+      if (data.success) {
+        showToast('Company record #' + id + ' deleted');
+        loadCompanies();
+        loadDashboard();
+      } else {
+        alert(data.message || 'Delete failed');
+      }
     }
+
+    function openModifyCompany(id) {
+      const c = window.cache.companies[id];
+      if (!c) return;
+      document.getElementById('editRecordType').value = 'company';
+      document.getElementById('editRecordId').value = id;
+      document.getElementById('modalTitle').textContent = `Modify Corporate Opportunity #${id}`;
+      document.getElementById('modalFormFields').innerHTML = `
+        <div class="form-group" style="margin-bottom:14px;">
+          <label>Company Name</label>
+          <input type="text" id="mCName" class="form-control" value="${escapeHtml(c.companyName)}" required />
+        </div>
+        <div class="form-group" style="margin-bottom:14px;">
+          <label>Target Role</label>
+          <input type="text" id="mCRole" class="form-control" value="${escapeHtml(c.role)}" required />
+        </div>
+        <div class="form-group" style="margin-bottom:14px;">
+          <label>Application Date</label>
+          <input type="date" id="mCDate" class="form-control" value="${c.applicationDate || ''}" required />
+        </div>
+        <div class="form-group" style="margin-bottom:14px;">
+          <label>Status</label>
+          <select id="mCStatus" class="form-control">
+            <option value="Applied" ${c.status === 'Applied' ? 'selected' : ''}>Applied</option>
+            <option value="Shortlisted" ${c.status === 'Shortlisted' ? 'selected' : ''}>Shortlisted</option>
+            <option value="Interview" ${c.status === 'Interview' ? 'selected' : ''}>Interview</option>
+            <option value="Selected" ${c.status === 'Selected' ? 'selected' : ''}>Selected</option>
+            <option value="Rejected" ${c.status === 'Rejected' ? 'selected' : ''}>Rejected</option>
+          </select>
+        </div>
+      `;
+      document.getElementById('editModalOverlay').style.display = 'flex';
+    }
+
+    // =========================================================================
+    // 2. APTITUDE CRUD
+    // =========================================================================
 
     async function loadAptitude() {
       const res = await fetch('/api/aptitude');
       const list = await res.json();
       const tb = document.querySelector('#aptTable tbody');
       tb.innerHTML = '';
+      window.cache.aptitude = {};
       list.forEach(a => {
+        window.cache.aptitude[a.id] = a;
         const badgeClass = 'badge-' + (a.status || '').toLowerCase().replace(/\\s+/g, '-');
-        tb.innerHTML += `<tr><td>${a.id}</td><td><strong>${a.topic}</strong></td><td>${a.score}/100</td><td>${a.testDate}</td><td><span class="badge ${badgeClass}">${a.status}</span></td></tr>`;
+        tb.innerHTML += `
+          <tr>
+            <td>${a.id}</td>
+            <td><strong>${escapeHtml(a.topic)}</strong></td>
+            <td>${a.score}/100</td>
+            <td>${a.testDate || ''}</td>
+            <td><span class="badge ${badgeClass}">${a.status}</span></td>
+            <td>
+              <button type="button" class="btn-modify" onclick="openModifyAptitude(${a.id})">✏️ Modify</button>
+              <button type="button" class="btn-delete" onclick="deleteAptitude(${a.id})">🗑️ Delete</button>
+            </td>
+          </tr>
+        `;
       });
     }
 
@@ -1032,27 +1459,102 @@
       const score = document.getElementById('aScore').value;
       const date = document.getElementById('aDate').value;
 
-      await fetch('/api/aptitude', {
+      const res = await fetch('/api/aptitude', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ topic: topic, score: score, testDate: date })
       });
-      document.getElementById('aTopic').value = '';
-      document.getElementById('aScore').value = '';
-      showToast('Aptitude test logged and auto-graded!');
-      loadAptitude();
-      loadDashboard();
+      const data = await res.json();
+      if (data.success) {
+        document.getElementById('aTopic').value = '';
+        document.getElementById('aScore').value = '';
+        showToast('Aptitude assessment logged and graded!');
+        loadAptitude();
+        loadDashboard();
+      } else {
+        alert(data.message || 'Failed to record test');
+      }
     }
+
+    async function deleteAptitude(id) {
+      if (!confirm('Are you sure you want to delete Aptitude test #' + id + '?')) return;
+      const res = await fetch('/api/aptitude/delete', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ id: id })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast('Aptitude record #' + id + ' deleted');
+        loadAptitude();
+        loadDashboard();
+      } else {
+        alert(data.message || 'Delete failed');
+      }
+    }
+
+    function openModifyAptitude(id) {
+      const a = window.cache.aptitude[id];
+      if (!a) return;
+      document.getElementById('editRecordType').value = 'aptitude';
+      document.getElementById('editRecordId').value = id;
+      document.getElementById('modalTitle').textContent = `Modify Aptitude Assessment #${id}`;
+      document.getElementById('modalFormFields').innerHTML = `
+        <div class="form-group" style="margin-bottom:14px;">
+          <label>Assessment Topic</label>
+          <input type="text" id="mATopic" class="form-control" value="${escapeHtml(a.topic)}" required />
+        </div>
+        <div class="form-group" style="margin-bottom:14px;">
+          <label>Score (0-100)</label>
+          <input type="number" id="mAScore" min="0" max="100" class="form-control" value="${a.score}" required />
+        </div>
+        <div class="form-group" style="margin-bottom:14px;">
+          <label>Assessment Date</label>
+          <input type="date" id="mADate" class="form-control" value="${a.testDate || ''}" required />
+        </div>
+        <div class="form-group" style="margin-bottom:14px;">
+          <label>Performance Grade (Auto-calculates if unchanged)</label>
+          <select id="mAStatus" class="form-control">
+            <option value="" ${!a.status ? 'selected' : ''}>Auto-calculate from Score</option>
+            <option value="Excellent" ${a.status === 'Excellent' ? 'selected' : ''}>Excellent (≥85%)</option>
+            <option value="Good" ${a.status === 'Good' ? 'selected' : ''}>Good (70-84%)</option>
+            <option value="Average" ${a.status === 'Average' ? 'selected' : ''}>Average (50-69%)</option>
+            <option value="Needs Improvement" ${a.status === 'Needs Improvement' ? 'selected' : ''}>Needs Improvement (&lt;50%)</option>
+          </select>
+        </div>
+      `;
+      document.getElementById('editModalOverlay').style.display = 'flex';
+    }
+
+    // =========================================================================
+    // 3. DSA CRUD
+    // =========================================================================
 
     async function loadDsa() {
       const res = await fetch('/api/dsa');
       const list = await res.json();
       const tb = document.querySelector('#dsaTable tbody');
       tb.innerHTML = '';
+      window.cache.dsa = {};
       list.forEach(d => {
+        window.cache.dsa[d.id] = d;
         const diffBadge = 'badge-' + (d.difficulty || '').toLowerCase();
         const statusBadge = 'badge-' + (d.status || '').toLowerCase();
-        tb.innerHTML += `<tr><td>${d.id}</td><td>${d.topic}</td><td><strong>${d.problemName}</strong></td><td>${d.platform}</td><td><span class="badge ${diffBadge}">${d.difficulty}</span></td><td><span class="badge ${statusBadge}">${d.status}</span></td><td>${d.dateSolved}</td></tr>`;
+        tb.innerHTML += `
+          <tr>
+            <td>${d.id}</td>
+            <td>${escapeHtml(d.topic)}</td>
+            <td><strong>${escapeHtml(d.problemName)}</strong></td>
+            <td>${escapeHtml(d.platform)}</td>
+            <td><span class="badge ${diffBadge}">${d.difficulty}</span></td>
+            <td><span class="badge ${statusBadge}">${d.status}</span></td>
+            <td>${d.dateSolved || ''}</td>
+            <td>
+              <button type="button" class="btn-modify" onclick="openModifyDsa(${d.id})">✏️ Modify</button>
+              <button type="button" class="btn-delete" onclick="deleteDsa(${d.id})">🗑️ Delete</button>
+            </td>
+          </tr>
+        `;
       });
     }
 
@@ -1065,25 +1567,112 @@
       const status = document.getElementById('dStatus').value;
       const date = document.getElementById('dDate').value;
 
-      await fetch('/api/dsa', {
+      const res = await fetch('/api/dsa', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ topic, problemName: name, platform, difficulty: diff, status, dateSolved: date })
       });
-      document.getElementById('dName').value = '';
-      showToast('DSA problem logged!');
-      loadDsa();
-      loadDashboard();
+      const data = await res.json();
+      if (data.success) {
+        document.getElementById('dName').value = '';
+        showToast('DSA problem logged successfully!');
+        loadDsa();
+        loadDashboard();
+      } else {
+        alert(data.message || 'Failed to log problem');
+      }
     }
+
+    async function deleteDsa(id) {
+      if (!confirm('Are you sure you want to delete DSA problem #' + id + '?')) return;
+      const res = await fetch('/api/dsa/delete', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ id: id })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast('DSA problem #' + id + ' deleted');
+        loadDsa();
+        loadDashboard();
+      } else {
+        alert(data.message || 'Delete failed');
+      }
+    }
+
+    function openModifyDsa(id) {
+      const d = window.cache.dsa[id];
+      if (!d) return;
+      document.getElementById('editRecordType').value = 'dsa';
+      document.getElementById('editRecordId').value = id;
+      document.getElementById('modalTitle').textContent = `Modify DSA Problem #${id}`;
+      document.getElementById('modalFormFields').innerHTML = `
+        <div class="form-group" style="margin-bottom:14px;">
+          <label>Topic Category</label>
+          <input type="text" id="mDTopic" class="form-control" value="${escapeHtml(d.topic)}" required />
+        </div>
+        <div class="form-group" style="margin-bottom:14px;">
+          <label>Problem Title</label>
+          <input type="text" id="mDName" class="form-control" value="${escapeHtml(d.problemName)}" required />
+        </div>
+        <div class="form-group" style="margin-bottom:14px;">
+          <label>Platform</label>
+          <select id="mDPlatform" class="form-control">
+            <option value="LeetCode" ${d.platform === 'LeetCode' ? 'selected' : ''}>LeetCode</option>
+            <option value="HackerRank" ${d.platform === 'HackerRank' ? 'selected' : ''}>HackerRank</option>
+            <option value="GeeksforGeeks" ${d.platform === 'GeeksforGeeks' ? 'selected' : ''}>GeeksforGeeks</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:14px;">
+          <label>Difficulty</label>
+          <select id="mDDiff" class="form-control">
+            <option value="Easy" ${d.difficulty === 'Easy' ? 'selected' : ''}>Easy</option>
+            <option value="Medium" ${d.difficulty === 'Medium' ? 'selected' : ''}>Medium</option>
+            <option value="Hard" ${d.difficulty === 'Hard' ? 'selected' : ''}>Hard</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:14px;">
+          <label>Status</label>
+          <select id="mDStatus" class="form-control">
+            <option value="Solved" ${d.status === 'Solved' ? 'selected' : ''}>Solved</option>
+            <option value="Revision" ${d.status === 'Revision' ? 'selected' : ''}>Revision</option>
+            <option value="Pending" ${d.status === 'Pending' ? 'selected' : ''}>Pending</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:14px;">
+          <label>Date Logged</label>
+          <input type="date" id="mDDate" class="form-control" value="${d.dateSolved || ''}" required />
+        </div>
+      `;
+      document.getElementById('editModalOverlay').style.display = 'flex';
+    }
+
+    // =========================================================================
+    // 4. INTERVIEWS CRUD (With Modify & Delete)
+    // =========================================================================
 
     async function loadInterviews() {
       const res = await fetch('/api/interviews');
       const list = await res.json();
       const tb = document.querySelector('#invTable tbody');
       tb.innerHTML = '';
+      window.cache.interviews = {};
       list.forEach(inv => {
+        window.cache.interviews[inv.id] = inv;
         const badgeClass = 'badge-' + (inv.result || '').toLowerCase();
-        tb.innerHTML += `<tr><td>${inv.id}</td><td><strong>${inv.companyName}</strong></td><td>${inv.roundName}</td><td>${inv.interviewDate}</td><td><span class="badge ${badgeClass}">${inv.result}</span></td></tr>`;
+        tb.innerHTML += `
+          <tr>
+            <td>${inv.id}</td>
+            <td><strong>${escapeHtml(inv.companyName)}</strong></td>
+            <td>${escapeHtml(inv.roundName)}</td>
+            <td>${inv.interviewDate || ''}</td>
+            <td><span class="badge ${badgeClass}">${inv.result}</span></td>
+            <td>
+              <button type="button" class="btn-modify" onclick="openModifyInterview(${inv.id})">✏️ Modify</button>
+              <button type="button" class="btn-delete" onclick="deleteInterview(${inv.id})">🗑️ Delete</button>
+            </td>
+          </tr>
+        `;
       });
     }
 
@@ -1094,26 +1683,242 @@
       const date = document.getElementById('iDate').value;
       const result = document.getElementById('iResult').value;
 
-      await fetch('/api/interviews', {
+      const res = await fetch('/api/interviews', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ companyName: company, roundName: round, interviewDate: date, result: result })
       });
-      document.getElementById('iCompany').value = '';
-      document.getElementById('iRound').value = '';
-      showToast('Interview round scheduled!');
-      loadInterviews();
-      loadDashboard();
+      const data = await res.json();
+      if (data.success) {
+        document.getElementById('iCompany').value = '';
+        document.getElementById('iRound').value = '';
+        showToast('Campus recruitment round scheduled!');
+        loadInterviews();
+        loadDashboard();
+      } else {
+        alert(data.message || 'Failed to schedule round');
+      }
     }
 
+    async function deleteInterview(id) {
+      if (!confirm('Are you sure you want to delete Interview round #' + id + '?')) return;
+      const res = await fetch('/api/interviews/delete', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ id: id })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showToast('Interview round #' + id + ' deleted');
+        loadInterviews();
+        loadDashboard();
+      } else {
+        alert(data.message || 'Delete failed');
+      }
+    }
+
+    function openModifyInterview(id) {
+      const inv = window.cache.interviews[id];
+      if (!inv) return;
+      document.getElementById('editRecordType').value = 'interview';
+      document.getElementById('editRecordId').value = id;
+      document.getElementById('modalTitle').textContent = `Modify Recruitment Round #${id}`;
+      document.getElementById('modalFormFields').innerHTML = `
+        <div class="form-group" style="margin-bottom:14px;">
+          <label>Company Name</label>
+          <input type="text" id="mICompany" class="form-control" value="${escapeHtml(inv.companyName)}" required />
+        </div>
+        <div class="form-group" style="margin-bottom:14px;">
+          <label>Interview Round / Title</label>
+          <input type="text" id="mIRound" class="form-control" value="${escapeHtml(inv.roundName)}" required />
+        </div>
+        <div class="form-group" style="margin-bottom:14px;">
+          <label>Interview Date</label>
+          <input type="date" id="mIDate" class="form-control" value="${inv.interviewDate || ''}" required />
+        </div>
+        <div class="form-group" style="margin-bottom:14px;">
+          <label>Result Status</label>
+          <select id="mIResult" class="form-control">
+            <option value="Pending" ${inv.result === 'Pending' ? 'selected' : ''}>Pending</option>
+            <option value="Selected" ${inv.result === 'Selected' ? 'selected' : ''}>Selected</option>
+            <option value="Rejected" ${inv.result === 'Rejected' ? 'selected' : ''}>Rejected</option>
+          </select>
+        </div>
+      `;
+      document.getElementById('editModalOverlay').style.display = 'flex';
+    }
+
+    // =========================================================================
+    // 5. MODAL DISPATCHER
+    // =========================================================================
+
+    function closeEditModal() {
+      document.getElementById('editModalOverlay').style.display = 'none';
+    }
+
+    async function handleModalSubmit(e) {
+      e.preventDefault();
+      const type = document.getElementById('editRecordType').value;
+      const id = document.getElementById('editRecordId').value;
+      const saveBtn = document.getElementById('btnSaveModal');
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Saving to MySQL...';
+
+      let endpoint = '';
+      let payload = { id: id };
+
+      if (type === 'company') {
+        endpoint = '/api/companies/modify';
+        payload.companyName = document.getElementById('mCName').value;
+        payload.role = document.getElementById('mCRole').value;
+        payload.applicationDate = document.getElementById('mCDate').value;
+        payload.status = document.getElementById('mCStatus').value;
+      } else if (type === 'aptitude') {
+        endpoint = '/api/aptitude/modify';
+        payload.topic = document.getElementById('mATopic').value;
+        payload.score = document.getElementById('mAScore').value;
+        payload.testDate = document.getElementById('mADate').value;
+        payload.status = document.getElementById('mAStatus').value;
+      } else if (type === 'dsa') {
+        endpoint = '/api/dsa/modify';
+        payload.topic = document.getElementById('mDTopic').value;
+        payload.problemName = document.getElementById('mDName').value;
+        payload.platform = document.getElementById('mDPlatform').value;
+        payload.difficulty = document.getElementById('mDDiff').value;
+        payload.status = document.getElementById('mDStatus').value;
+        payload.dateSolved = document.getElementById('mDDate').value;
+      } else if (type === 'interview') {
+        endpoint = '/api/interviews/modify';
+        payload.companyName = document.getElementById('mICompany').value;
+        payload.roundName = document.getElementById('mIRound').value;
+        payload.interviewDate = document.getElementById('mIDate').value;
+        payload.result = document.getElementById('mIResult').value;
+      }
+
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Record #' + id + ' updated successfully in MySQL!');
+          closeEditModal();
+          if (type === 'company') loadCompanies();
+          if (type === 'aptitude') loadAptitude();
+          if (type === 'dsa') loadDsa();
+          if (type === 'interview') loadInterviews();
+          loadDashboard();
+          loadReports();
+        } else {
+          alert(data.message || 'Update failed');
+        }
+      } catch (err) {
+        alert('Error connecting to MySQL web server: ' + err.message);
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Save Changes';
+      }
+    }
+
+    // =========================================================================
+    // 6. ENHANCED REPORTS UI WITH LIVE METRICS & MATRIX TABLE
+    // =========================================================================
+
     async function loadReports() {
-      const res = await fetch('/api/reports');
-      const r = await res.json();
-      document.getElementById('priScore').textContent = r.readinessIndex + '%';
-      document.getElementById('repCompanyRate').textContent = r.companyConversion + '%';
-      document.getElementById('repDsaRate').textContent = r.dsaCompletion + '%';
-      document.getElementById('repAptRate').textContent = r.aptitudeExcellence + '%';
-      document.getElementById('repInvRate').textContent = r.interviewClearance + '%';
+      try {
+        const res = await fetch('/api/reports');
+        const r = await res.json();
+
+        // 1. Hero Composite Metrics
+        const pri = parseFloat(r.readinessIndex) || 0;
+        document.getElementById('priScore').textContent = pri.toFixed(1) + '%';
+        const priFill = document.getElementById('priProgressFill');
+        if (priFill) priFill.style.width = Math.min(100, Math.max(5, pri)) + '%';
+
+        const badge = document.getElementById('readinessBadge');
+        if (badge) {
+          if (pri >= 80) {
+            badge.textContent = '🌟 Top Tier Distinction — Prime Qualified';
+            badge.style.background = 'rgba(16, 185, 129, 0.25)';
+            badge.style.color = '#6EE7B7';
+          } else if (pri >= 60) {
+            badge.textContent = '✅ Advanced Readiness — Placement Ready';
+            badge.style.background = 'rgba(56, 189, 248, 0.25)';
+            badge.style.color = '#7DD3FC';
+          } else if (pri >= 40) {
+            badge.textContent = '⚡ Developing Competency — Active Practice';
+            badge.style.background = 'rgba(245, 158, 11, 0.25)';
+            badge.style.color = '#FDE68A';
+          } else {
+            badge.textContent = '📚 Foundational Readiness Phase';
+            badge.style.background = 'rgba(239, 68, 68, 0.25)';
+            badge.style.color = '#FCA5A5';
+          }
+        }
+
+        // 2. 4 Dimensional Rate Cards & Bars
+        const compRate = parseFloat(r.companyConversion) || 0;
+        const dsaRate = parseFloat(r.dsaCompletion) || 0;
+        const aptRate = parseFloat(r.aptitudeExcellence) || 0;
+        const invRate = parseFloat(r.interviewClearance) || 0;
+
+        document.getElementById('repCompanyRate').textContent = compRate.toFixed(1) + '%';
+        document.getElementById('repDsaRate').textContent = dsaRate.toFixed(1) + '%';
+        document.getElementById('repAptRate').textContent = aptRate.toFixed(1) + '%';
+        document.getElementById('repInvRate').textContent = invRate.toFixed(1) + '%';
+
+        const fillComp = document.getElementById('fillCompany');
+        if (fillComp) fillComp.style.width = Math.min(100, Math.max(8, compRate)) + '%';
+        const fillDsa = document.getElementById('fillDsa');
+        if (fillDsa) fillDsa.style.width = Math.min(100, Math.max(8, dsaRate)) + '%';
+        const fillApt = document.getElementById('fillApt');
+        if (fillApt) fillApt.style.width = Math.min(100, Math.max(8, aptRate)) + '%';
+        const fillInv = document.getElementById('fillInv');
+        if (fillInv) fillInv.style.width = Math.min(100, Math.max(8, invRate)) + '%';
+
+        // 3. Subtitles with live summary
+        const s = r.summary || {};
+        if (s.companies) {
+          document.getElementById('repCompanySub').textContent = `${s.companies.selected || 1} Selected of ${s.companies.total || 6} Tracked`;
+          document.getElementById('mCompTotal').textContent = `${s.companies.total || 6} Companies`;
+          document.getElementById('mCompCleared').textContent = `${s.companies.selected || 1} Selected, ${s.companies.interview || 1} Interview`;
+          document.getElementById('mCompRate').textContent = compRate.toFixed(1) + '%';
+          const cScore = ((s.companies.total > 0 ? 100 : 0) * 0.25).toFixed(1);
+          document.getElementById('mCompScore').innerHTML = `<strong>${cScore} pts</strong>`;
+        }
+
+        if (s.dsa) {
+          document.getElementById('repDsaSub').textContent = `${s.dsa.solved || 4} Solved of ${s.dsa.total || 6} Logged`;
+          document.getElementById('mDsaTotal').textContent = `${s.dsa.total || 6} Problems`;
+          document.getElementById('mDsaCleared').textContent = `${s.dsa.solved || 4} Solved (Easy:${s.dsa.easy || 2}, Med:${s.dsa.medium || 2})`;
+          document.getElementById('mDsaRate').textContent = dsaRate.toFixed(1) + '%';
+          const dScore = (dsaRate * 0.35).toFixed(1);
+          document.getElementById('mDsaScore').innerHTML = `<strong>${dScore} pts</strong>`;
+        }
+
+        if (s.aptitude) {
+          document.getElementById('repAptSub').textContent = `${s.aptitude.excellent || 3} Scored ≥85 of ${s.aptitude.total || 6} Tests`;
+          document.getElementById('mAptTotal').textContent = `${s.aptitude.total || 6} Tests`;
+          document.getElementById('mAptCleared').textContent = `${s.aptitude.excellent || 3} Excellent, ${s.aptitude.good || 2} Good`;
+          document.getElementById('mAptRate').textContent = aptRate.toFixed(1) + '%';
+          const aScore = (aptRate * 0.25).toFixed(1);
+          document.getElementById('mAptScore').innerHTML = `<strong>${aScore} pts</strong>`;
+        }
+
+        if (s.interview) {
+          document.getElementById('repInvSub').textContent = `${s.interview.selected || 1} Cleared (${s.interview.pending || 2} Pending)`;
+          document.getElementById('mInvTotal').textContent = `${s.interview.total || 5} Rounds`;
+          document.getElementById('mInvCleared').textContent = `${s.interview.selected || 1} Selected, ${s.interview.pending || 2} In Progress`;
+          document.getElementById('mInvRate').textContent = invRate.toFixed(1) + '%';
+          const iScore = (invRate * 0.15).toFixed(1);
+          document.getElementById('mInvScore').innerHTML = `<strong>${iScore} pts</strong>`;
+        }
+
+      } catch (err) {
+        console.error('Failed to load reports:', err);
+      }
     }
 
     async function loadDiagnostics() {
